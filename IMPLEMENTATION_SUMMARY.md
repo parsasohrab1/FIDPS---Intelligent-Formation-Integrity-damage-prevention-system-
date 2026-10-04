@@ -1,25 +1,25 @@
-# خلاصه پیاده‌سازی موارد مفقود FIDPS
+# Summary of Implementation of Missing FIDPS Items
 
-این سند خلاصه‌ای از پیاده‌سازی موارد مفقود با اولویت بالا و متوسط است که بر اساس SRS و کد موجود شناسایی شده‌اند.
+This document summarizes the implementation of high- and medium-priority missing items identified based on the SRS and existing code.
 
-## اولویت بالا (High Priority) - تکمیل شده ✅
+## High Priority - Completed ✅
 
-### 1. موتور استنتاج علّی (Causal Inference Engine - CIE) ✅
+### 1. Causal Inference Engine (CIE) ✅
 
-**فایل‌های پیاده‌سازی:**
+**Implementation files:**
 - `ml-anomaly-detection/models/causal_inference_engine.py`
 - `ml-anomaly-detection/services/causal_inference_service.py`
 
-**قابلیت‌ها:**
-- تحلیل ریشه خطا (Root Cause Analysis) برای 10 نوع آسیب سازند
-- شناسایی روابط علّی با استفاده از:
-  - Knowledge Base (دانش دامنه)
-  - تحلیل آماری (Correlation Analysis)
-  - Granger Causality (برای داده‌های سری زمانی)
-- تولید توصیه‌های کاهش ریسک (Mitigation Recommendations)
-- دسته‌بندی علل ریشه‌ای (Operational, Fluid, Formation, Equipment, etc.)
+**Capabilities:**
+- Root Cause Analysis for 10 types of formation damage
+- Identification of causal relationships using:
+  - Knowledge Base (domain knowledge)
+  - Statistical analysis (Correlation Analysis)
+  - Granger Causality (for time-series data)
+- Generation of Mitigation Recommendations
+- Classification of root causes (Operational, Fluid, Formation, Equipment, etc.)
 
-**استفاده:**
+**Usage:**
 ```python
 from models.causal_inference_engine import CausalInferenceEngine
 
@@ -28,26 +28,26 @@ rca = cie.analyze_root_cause(anomaly_data, historical_data, damage_type="DT-02")
 recommendations = cie.generate_mitigation_recommendations(rca)
 ```
 
-### 2. Digital Twin/مدل شبیه‌سازی ✅
+### 2. Digital Twin / Simulation Model ✅
 
-**فایل‌های پیاده‌سازی:**
+**Implementation files:**
 - `rto-service/digital_twin.py`
-- ادغام در `rto-service/main.py`
+- Integrated in `rto-service/main.py`
 
-**قابلیت‌ها:**
-- مدل فیزیک‌محور شبیه‌سازی حفاری
-- اعتبارسنجی توصیه‌های RTO قبل از اجرا
-- بررسی ایمنی (Safety Checks)
-- بررسی محدودیت‌ها (Constraint Checks)
-- محاسبه تغییرات ریسک و کارایی
+**Capabilities:**
+- Physics-based drilling simulation model
+- Validation of RTO recommendations before execution
+- Safety Checks
+- Constraint Checks
+- Calculation of risk and efficiency changes
 
-**وضعیت‌های اعتبارسنجی:**
-- `SAFE`: ایمن برای اجرا
-- `UNSAFE`: ناایمن - اجرا نشود
-- `WARNING`: هشدار - با احتیاط اجرا شود
-- `FAILED`: خطای شبیه‌سازی
+**Validation statuses:**
+- `SAFE`: safe to execute
+- `UNSAFE`: unsafe - do not execute
+- `WARNING`: warning - execute with caution
+- `FAILED`: simulation error
 
-**استفاده:**
+**Usage:**
 ```python
 from digital_twin import DigitalTwinSimulator
 
@@ -56,45 +56,45 @@ digital_twin.initialize_state(current_params)
 validation = digital_twin.validate_recommendation(recommendation_id, recommended_params)
 ```
 
-### 3. سرویس پردازش داده‌های تصویر/صوت (SSD) ✅
+### 3. Image/Audio Data Processing Service (SSD) ✅
 
-**فایل‌های پیاده‌سازی:**
+**Implementation files:**
 - `image-processing-service/main.py`
 - `image-processing-service/Dockerfile`
 - `image-processing-service/requirements.txt`
 
-**قابلیت‌ها:**
-- پردازش تصاویر بلادرنگ برای تشخیص آسیب‌های ساختاری
-- تشخیص ترک و شکستگی با Computer Vision و ML
-- محاسبه معیارهای Integrity (crack density, fracture count)
-- ادغام با Kafka برای پردازش داده‌های با حجم بالا
-- API برای آپلود و پردازش تصاویر
+**Capabilities:**
+- Real-time image processing for structural damage detection
+- Crack and fracture detection with Computer Vision and ML
+- Calculation of Integrity metrics (crack density, fracture count)
+- Integration with Kafka for high-volume data processing
+- API for uploading and processing images
 
-**سرویس‌ها:**
-- Kafka Consumer: پردازش خودکار تصاویر از topics
-- REST API: آپلود و پردازش دستی تصاویر
+**Services:**
+- Kafka Consumer: automatic processing of images from topics
+- REST API: manual upload and processing of images
 
-## اولویت متوسط (Medium Priority) - تکمیل شده ✅
+## Medium Priority - Completed ✅
 
 ### 4. Real-Time Feature Store ✅
 
-**فایل پیاده‌سازی:**
+**Implementation file:**
 - `ml-anomaly-detection/utils/feature_store.py`
 
-**قابلیت‌ها:**
-- ذخیره‌سازی ویژگی‌ها در Redis
-- نسخه‌گذاری ویژگی‌ها
-- محاسبه خودکار ویژگی‌های مشتق (Derived Features)
-- محاسبه ویژگی‌های آماری (Z-score, Mean, Std, etc.)
-- تضمین سازگاری بین Training و Serving
+**Capabilities:**
+- Storing features in Redis
+- Feature versioning
+- Automatic calculation of derived features (Derived Features)
+- Calculation of statistical features (Z-score, Mean, Std, etc.)
+- Ensuring consistency between Training and Serving
 
-**ویژگی‌های مشتق:**
+**Derived features:**
 - Hydraulic Horsepower
 - Specific Energy
 - Differential Pressure
 - Flow Velocity
 
-**استفاده:**
+**Usage:**
 ```python
 from utils.feature_store import RealTimeFeatureStore
 
@@ -102,20 +102,20 @@ feature_store = RealTimeFeatureStore(redis_client)
 features = feature_store.compute_features(raw_data, entity_id="well_001")
 ```
 
-### 5. تکمیل اعتبارسنجی DVR در Flink ✅
+### 5. Completing DVR Validation in Flink ✅
 
-**فایل به‌روزرسانی شده:**
+**Updated file:**
 - `data-validation/flink-validation-job.py`
 
-**قابلیت‌های اضافه شده:**
-- **Z-score Outlier Detection**: شناسایی مقادیر غیرعادی با Z-score
-- **IQR Outlier Detection**: شناسایی outliers با Interquartile Range
-- **Physical Consistency Check**: بررسی سازگاری فیزیکی بین فیلدهای مرتبط
-  - رابطه خطی (Linear): Pressure vs Depth
-  - همبستگی (Correlation): Torque vs WOB
-  - رابطه درجه دوم (Quadratic): Pressure vs Flow Rate
+**Added capabilities:**
+- **Z-score Outlier Detection**: identifying abnormal values with Z-score
+- **IQR Outlier Detection**: identifying outliers with the Interquartile Range
+- **Physical Consistency Check**: checking physical consistency between related fields
+  - Linear relationship: Pressure vs Depth
+  - Correlation: Torque vs WOB
+  - Quadratic relationship: Pressure vs Flow Rate
 
-**قوانین اعتبارسنجی جدید:**
+**New validation rules:**
 ```python
 # Z-score validation
 ValidationRule(
@@ -147,25 +147,25 @@ ValidationRule(
 )
 ```
 
-### 6. MLOps با MLflow ✅
+### 6. MLOps with MLflow ✅
 
-**فایل پیاده‌سازی:**
+**Implementation file:**
 - `ml-anomaly-detection/utils/mlflow_manager.py`
 
-**قابلیت‌ها:**
-- **مدیریت نسخه مدل**: ثبت و مدیریت نسخه‌های مختلف مدل
-- **A/B Testing**: تست مقایسه‌ای بین دو نسخه مدل
-- **بازآموزی خودکار**: تشخیص نیاز به بازآموزی بر اساس کاهش عملکرد
-- **ردیابی عملکرد**: ثبت و ردیابی معیارهای عملکرد مدل
-- **Model Registry**: ذخیره و مدیریت مدل‌ها
+**Capabilities:**
+- **Model version management**: registering and managing different model versions
+- **A/B Testing**: comparative testing between two model versions
+- **Automatic retraining**: detecting the need for retraining based on performance degradation
+- **Performance tracking**: recording and tracking model performance metrics
+- **Model Registry**: storing and managing models
 
-**استفاده:**
+**Usage:**
 ```python
 from utils.mlflow_manager import MLflowManager
 
 mlflow_manager = MLflowManager(config)
 
-# ثبت مدل
+# Register a model
 run_id = mlflow_manager.log_model_training(
     model, "anomaly_detector", metrics, params, features, data_size
 )
@@ -176,30 +176,30 @@ ab_test_id = mlflow_manager.setup_ab_test(
     "model_a", "v1", "model_b", "v2", traffic_split=0.5
 )
 
-# بررسی نیاز به بازآموزی
+# Check whether retraining is needed
 needs_retraining, reason = mlflow_manager.check_retraining_trigger(
     model_version, current_metrics, baseline_metrics
 )
 ```
 
-## تغییرات Docker Compose
+## Docker Compose Changes
 
-سرویس‌های جدید اضافه شده:
-- **MLflow Tracking Server**: برای مدیریت MLOps
-- **Image Processing Service**: برای پردازش تصاویر
+New services added:
+- **MLflow Tracking Server**: for MLOps management
+- **Image Processing Service**: for image processing
 
-## نحوه استفاده
+## How to Use
 
-### 1. راه‌اندازی سرویس‌ها
+### 1. Starting the services
 
 ```bash
 docker-compose up -d
 ```
 
-### 2. استفاده از Causal Inference Engine
+### 2. Using the Causal Inference Engine
 
 ```python
-# در ML service
+# In the ML service
 from services.causal_inference_service import CausalInferenceService
 
 cie_service = CausalInferenceService(config)
@@ -207,28 +207,28 @@ cie_service.initialize()
 result = cie_service.process_anomaly(anomaly_data)
 ```
 
-### 3. استفاده از Digital Twin در RTO
+### 3. Using the Digital Twin in RTO
 
-Digital Twin به صورت خودکار در RTO service فعال است و توصیه‌ها را قبل از ارسال اعتبارسنجی می‌کند.
+The Digital Twin is automatically active in the RTO service and validates recommendations before they are sent.
 
-### 4. استفاده از Feature Store
+### 4. Using the Feature Store
 
 ```python
-# در ML service
+# In the ML service
 from utils.feature_store import RealTimeFeatureStore
 import redis
 
 redis_client = redis.Redis(host='redis', port=6379)
 feature_store = RealTimeFeatureStore(redis_client, namespace="fidps_features")
 
-# محاسبه ویژگی‌ها
+# Calculate features
 features = feature_store.compute_features(raw_data, entity_id="well_001")
 ```
 
-### 5. استفاده از MLflow
+### 5. Using MLflow
 
 ```python
-# در ML service
+# In the ML service
 from utils.mlflow_manager import MLflowManager
 
 config = {
@@ -238,19 +238,19 @@ config = {
 mlflow_manager = MLflowManager(config)
 ```
 
-## نکات مهم
+## Important Notes
 
-1. **Z-score و IQR در Flink**: پیاده‌سازی فعلی نیاز به Flink State Management دارد. برای استفاده کامل، باید از Flink State برای نگهداری آمارهای تاریخی استفاده شود.
+1. **Z-score and IQR in Flink**: The current implementation requires Flink State Management. For full use, Flink State must be used to keep historical statistics.
 
-2. **Digital Twin**: مدل فعلی ساده‌سازی شده است. برای استفاده در تولید، باید با داده‌های واقعی کالیبره شود.
+2. **Digital Twin**: The current model is simplified. For production use, it must be calibrated with real data.
 
-3. **MLflow**: نیاز به راه‌اندازی MLflow Tracking Server دارد که در docker-compose اضافه شده است.
+3. **MLflow**: Requires starting the MLflow Tracking Server, which has been added in docker-compose.
 
-4. **Feature Store**: برای استفاده کامل، نیاز به اتصال به InfluxDB یا Time-Series DB برای نگهداری تاریخچه ویژگی‌ها است.
+4. **Feature Store**: For full use, it requires a connection to InfluxDB or a Time-Series DB to keep feature history.
 
-## وضعیت تکمیل
+## Completion Status
 
-- ✅ تمام موارد اولویت بالا (3 مورد)
-- ✅ تمام موارد اولویت متوسط (3 مورد)
-- ✅ کل: 6/6 مورد تکمیل شده
+- ✅ All high-priority items (3 items)
+- ✅ All medium-priority items (3 items)
+- ✅ Total: 6/6 items completed
 

@@ -2,7 +2,7 @@
   FIDPS - Installation Complete Checklist
 ================================================================================
 
-✅ همه فایل‌های ضروری ایجاد شد!
+✅ All essential files were created!
 
 --------------------------------------------------------------------------------
 NEW SERVICES CREATED:
@@ -49,63 +49,63 @@ DOCKER COMPOSE UPDATED:
 DOCUMENTATION CREATED:
 --------------------------------------------------------------------------------
 
-✅ INSTALLATION_COMPLETE.md - نصب کامل
-✅ QUICK_START.md - راهنمای سریع
-✅ DEPLOYMENT_GUIDE.md - راهنمای deployment
-✅ IMPLEMENTATION_SUMMARY.md - خلاصه پیاده‌سازی
-✅ HOW_TO_START.md - نحوه شروع
+✅ INSTALLATION_COMPLETE.md - complete installation
+✅ QUICK_START.md - quick guide
+✅ DEPLOYMENT_GUIDE.md - deployment guide
+✅ IMPLEMENTATION_SUMMARY.md - implementation summary
+✅ HOW_TO_START.md - how to start
 ✅ .gitignore - Git ignore file
-✅ start-fidps-complete.ps1 - اسکریپت راه‌اندازی
+✅ start-fidps-complete.ps1 - startup script
 
 --------------------------------------------------------------------------------
 NEXT STEPS:
 --------------------------------------------------------------------------------
 
-1. ⚠️ IMPORTANT: نصب Docker Desktop
-   - دانلود از: https://www.docker.com/products/docker-desktop
-   - نصب و Restart سیستم
+1. ⚠️ IMPORTANT: Install Docker Desktop
+   - Download from: https://www.docker.com/products/docker-desktop
+   - Install and restart the system
 
-2. پس از نصب Docker، اجرا کنید:
+2. After installing Docker, run:
    .\start-fidps-complete.ps1
 
-3. یا دستی:
+3. Or manually:
    docker compose up -d --build
 
-4. بررسی:
+4. Check:
    docker compose ps
-   - همه سرویس‌ها باید Up باشند
+   - All services must be Up
 
-5. مرورگر:
+5. Browser:
    http://localhost
 
 --------------------------------------------------------------------------------
 TROUBLESHOOTING:
 --------------------------------------------------------------------------------
 
-مشکل: Docker not found
-راه حل: Docker Desktop را نصب کنید
+Problem: Docker not found
+Solution: Install Docker Desktop
 
-مشکل: Port conflicts
-راه حل: بررسی کنید چه چیز از ports استفاده می‌کند:
+Problem: Port conflicts
+Solution: Check what is using the ports:
   netstat -ano | findstr :8000
 
-مشکل: Out of memory
-راه حل: Docker Desktop > Settings > Resources
+Problem: Out of memory
+Solution: Docker Desktop > Settings > Resources
   Memory: 16GB minimum
 
 --------------------------------------------------------------------------------
 SUPPORT FILES:
 --------------------------------------------------------------------------------
 
-- README.md - SRS اصلی
-- DEPLOYMENT_GUIDE.md - راهنمای deployment
-- QUICK_START.md - راهنمای سریع
-- HOW_TO_START.md - نحوه شروع
-- IMPLEMENTATION_SUMMARY.md - خلاصه کارها
+- README.md - Main SRS
+- DEPLOYMENT_GUIDE.md - Deployment guide
+- QUICK_START.md - Quick guide
+- HOW_TO_START.md - How to start
+- IMPLEMENTATION_SUMMARY.md - Summary of work
 
 --------------------------------------------------------------------------------
 SYSTEM READY! 🎉
 ================================================================================
 
-متشکرم!
+Thank you!
 

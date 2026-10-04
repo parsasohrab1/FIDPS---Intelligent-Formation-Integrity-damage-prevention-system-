@@ -1,55 +1,55 @@
-# راهنمای اجرای Dashboard بدون اینترنت (Offline Mode)
+# Guide to Running the Dashboard Without Internet (Offline Mode)
 
-## روش 1: اجرای مستقیم (نیاز به دانلود Chart.js)
+## Method 1: Direct Run (requires downloading Chart.js)
 
-### مرحله 1: دانلود Chart.js
+### Step 1: Download Chart.js
 
-1. فایل Chart.js را از یکی از آدرس‌های زیر دانلود کنید:
+1. Download the Chart.js file from one of the addresses below:
    - **CDN Link**: https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js
-   - **یا از سایت رسمی**: https://www.chartjs.org/docs/latest/getting-started/installation.html
+   - **Or from the official site**: https://www.chartjs.org/docs/latest/getting-started/installation.html
 
-2. فایل دانلود شده را در همان پوشه‌ای که `dashboard-html-demo.html` قرار دارد، ذخیره کنید و نام آن را `chart.umd.min.js` بگذارید.
+2. Save the downloaded file in the same folder where `dashboard-html-demo.html` is located and name it `chart.umd.min.js`.
 
-### مرحله 2: تغییر فایل HTML
+### Step 2: Modify the HTML File
 
-فایل `dashboard-html-demo.html` را باز کنید و خط زیر را پیدا کنید:
+Open the `dashboard-html-demo.html` file and find the following line:
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 ```
 
-آن را به این تغییر دهید:
+Change it to this:
 
 ```html
 <script src="./chart.umd.min.js"></script>
 ```
 
-### مرحله 3: اجرا
+### Step 3: Run
 
-1. اتصال اینترنت خود را قطع کنید
-2. روی فایل `dashboard-html-demo.html` دبل کلیک کنید
-3. Dashboard در مرورگر باز می‌شود و بدون نیاز به اینترنت کار می‌کند
-
----
-
-## روش 2: اجرا با Fallback (اگر Chart.js دانلود نشده)
-
-فایل `dashboard-html-demo.html` قبلاً یک fallback mechanism دارد که در صورت عدم دسترسی به CDN، از یک نسخه ساده استفاده می‌کند.
-
-**توجه**: این روش عملکرد محدودی دارد و نمودارها ممکن است به درستی نمایش داده نشوند.
+1. Disconnect your internet connection
+2. Double-click the `dashboard-html-demo.html` file
+3. The Dashboard opens in the browser and works without internet
 
 ---
 
-## روش 3: اجرا با استفاده از Local Server (پیشنهادی)
+## Method 2: Run with Fallback (if Chart.js has not been downloaded)
 
-### استفاده از Python (اگر نصب است):
+The `dashboard-html-demo.html` file already has a fallback mechanism that uses a simple version if the CDN is unavailable.
 
-1. در Command Prompt یا PowerShell به پوشه فایل بروید:
+**Note**: This method has limited functionality and charts may not display properly.
+
+---
+
+## Method 3: Run Using a Local Server (recommended)
+
+### Using Python (if installed):
+
+1. In Command Prompt or PowerShell, go to the file's folder:
 ```bash
 cd "C:\Users\asus\Documents\companies\ithub\AI\products\clones\fidps\FIDPS---Intelligent-Formation-Integrity-damage-prevention-system-"
 ```
 
-2. یک سرور محلی راه‌اندازی کنید:
+2. Start a local server:
 
 **Python 3:**
 ```bash
@@ -61,87 +61,87 @@ python -m http.server 8000
 python -m SimpleHTTPServer 8000
 ```
 
-3. مرورگر را باز کنید و به آدرس زیر بروید:
+3. Open the browser and go to the following address:
 ```
 http://localhost:8000/dashboard-html-demo.html
 ```
 
-### استفاده از Node.js (اگر نصب است):
+### Using Node.js (if installed):
 
-1. نصب http-server:
+1. Install http-server:
 ```bash
 npm install -g http-server
 ```
 
-2. اجرا در پوشه فایل:
+2. Run in the file's folder:
 ```bash
 http-server -p 8000
 ```
 
-3. باز کردن در مرورگر:
+3. Open in the browser:
 ```
 http://localhost:8000/dashboard-html-demo.html
 ```
 
 ---
 
-## روش 4: ایجاد نسخه کاملاً Standalone
+## Method 4: Create a Fully Standalone Version
 
-برای ایجاد یک نسخه کاملاً standalone که هیچ وابستگی خارجی ندارد:
+To create a fully standalone version with no external dependencies:
 
-### مرحله 1: دانلود Chart.js
+### Step 1: Download Chart.js
 
-از این لینک دانلود کنید:
+Download from this link:
 ```
 https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js
 ```
 
-### مرحله 2: Embed مستقیم در HTML
+### Step 2: Embed Directly in HTML
 
-می‌توانید محتوای فایل `chart.umd.min.js` را مستقیماً در فایل HTML قرار دهید (این کار فایل را بزرگ می‌کند اما کاملاً standalone می‌شود).
-
----
-
-## نکات مهم:
-
-1. **بهترین روش**: روش 1 (دانلود Chart.js و استفاده محلی) است
-2. **راه سریع**: استفاده از local server (روش 3) - حتی بدون اینترنت کار می‌کند اگر Chart.js را قبلاً دانلود کرده باشید
-3. **Save Dashboard**: دکمه "Save Dashboard" در بالای صفحه داده‌ها را در فایل JSON ذخیره می‌کند و همچنین در localStorage مرورگر ذخیره می‌شود
-4. **Data Persistence**: داده‌های ذخیره شده در localStorage حتی بعد از بستن مرورگر باقی می‌مانند
+You can place the contents of the `chart.umd.min.js` file directly in the HTML file (this makes the file large but fully standalone).
 
 ---
 
-## ساختار فایل‌های مورد نیاز:
+## Important Notes:
+
+1. **Best method**: Method 1 (download Chart.js and use locally)
+2. **Quick way**: use a local server (Method 3) - it works even without internet if Chart.js has already been downloaded
+3. **Save Dashboard**: the "Save Dashboard" button at the top of the page saves the data to a JSON file and also in the browser's localStorage
+4. **Data Persistence**: data saved in localStorage persists even after closing the browser
+
+---
+
+## Required File Structure:
 
 ```
 FIDPS---Intelligent-Formation-Integrity-damage-prevention-system-/
-├── dashboard-html-demo.html    (فایل اصلی Dashboard)
-├── chart.umd.min.js            (فایل Chart.js - باید دانلود شود)
-└── OFFLINE-DASHBOARD-GUIDE.md  (این راهنما)
+├── dashboard-html-demo.html    (main Dashboard file)
+├── chart.umd.min.js            (Chart.js file - must be downloaded)
+└── OFFLINE-DASHBOARD-GUIDE.md  (this guide)
 ```
 
 ---
 
-## راهنمای سریع (Quick Start):
+## Quick Start Guide:
 
-1. **دانلود Chart.js:**
-   - مرورگر را باز کنید و به این آدرس بروید: `https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js`
-   - با راست کلیک → Save As → فایل را در همان پوشه `dashboard-html-demo.html` ذخیره کنید
+1. **Download Chart.js:**
+   - Open the browser and go to this address: `https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js`
+   - Right-click → Save As → save the file in the same folder as `dashboard-html-demo.html`
 
-2. **تغییر فایل HTML:**
-   - `dashboard-html-demo.html` را با Notepad یا VS Code باز کنید
-   - خط 8-20 را پیدا کنید که مربوط به script Chart.js است
-   - به جای CDN link، از `./chart.umd.min.js` استفاده کنید
+2. **Modify the HTML file:**
+   - Open `dashboard-html-demo.html` with Notepad or VS Code
+   - Find lines 8-20, which relate to the Chart.js script
+   - Instead of the CDN link, use `./chart.umd.min.js`
 
-3. **اجرا:**
-   - روی فایل `dashboard-html-demo.html` دبل کلیک کنید
-   - Dashboard بدون نیاز به اینترنت اجرا می‌شود!
+3. **Run:**
+   - Double-click the `dashboard-html-demo.html` file
+   - The Dashboard runs without needing internet!
 
 ---
 
-## پشتیبانی:
+## Support:
 
-اگر مشکلی پیش آمد، بررسی کنید:
-- ✅ آیا فایل `chart.umd.min.js` در همان پوشه HTML قرار دارد؟
-- ✅ آیا مسیر فایل در تگ `<script>` درست است؟
-- ✅ آیا Console مرورگر (F12) خطایی نشان می‌دهد؟
+If a problem occurs, check:
+- ✅ Is the `chart.umd.min.js` file in the same folder as the HTML?
+- ✅ Is the file path in the `<script>` tag correct?
+- ✅ Does the browser Console (F12) show any error?

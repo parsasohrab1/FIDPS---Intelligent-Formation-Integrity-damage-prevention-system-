@@ -1,32 +1,32 @@
-# 📋 تغییرات انجام شده - FIDPS Project
+# 📋 Changes Made - FIDPS Project
 
-**تاریخ:** 2025  
-**نسخه:** 2.0.0 (Security & Quality Improvements)
-
----
-
-## 🔴 تغییرات امنیتی (Security)
-
-### ✅ SEC-001: حذف Hardcoded Passwords
-- تمام passwords از `docker-compose.yml` به environment variables منتقل شدند
-- فایل `env.example` ایجاد شد
-- تمام سرویس‌ها از `.env` استفاده می‌کنند
-
-**Breaking Changes:** نیاز به ایجاد فایل `.env` قبل از start
+**Date:** 2025
+**Version:** 2.0.0 (Security & Quality Improvements)
 
 ---
 
-### ✅ SEC-002: محدودسازی CORS
-- CORS wildcard (`*`) حذف شد
-- محدود به origins مشخص از `CORS_ALLOWED_ORIGINS`
-- در 3 سرویس اعمال شد: api-dashboard, rto-service, pdm-service
+## 🔴 Security Changes
+
+### ✅ SEC-001: Removed Hardcoded Passwords
+- All passwords moved from `docker-compose.yml` to environment variables
+- The `env.example` file was created
+- All services use `.env`
+
+**Breaking Changes:** A `.env` file must be created before start
+
+---
+
+### ✅ SEC-002: Restricted CORS
+- The CORS wildcard (`*`) was removed
+- Restricted to specific origins from `CORS_ALLOWED_ORIGINS`
+- Applied to 3 services: api-dashboard, rto-service, pdm-service
 
 **Environment Variable:** `CORS_ALLOWED_ORIGINS` (default: localhost origins)
 
 ---
 
-### ✅ SEC-003: پیاده‌سازی Authentication
-- JWT authentication کامل پیاده‌سازی شد
+### ✅ SEC-003: Implemented Authentication
+- Full JWT authentication implemented
 - Role-based access control (RBAC)
 - Login endpoints: `/api/v1/auth/login`, `/api/v1/auth/login/json`
 - User info endpoint: `/api/v1/auth/me`
@@ -37,7 +37,7 @@
 - operator / operator123  
 - viewer / viewer123
 
-**⚠️ برای Production:** تمام passwords را تغییر دهید!
+**⚠️ For Production:** Change all passwords!
 
 **Environment Variables:**
 - `JWT_SECRET_KEY` (min 32 chars)
@@ -45,13 +45,13 @@
 
 ---
 
-## 🟠 بهبود قابلیت اطمینان (Reliability)
+## 🟠 Reliability Improvements
 
 ### ✅ REL-001: Database Retry Logic
 - Exponential backoff retry mechanism
 - Configurable retry attempts
-- Random jitter برای prevent thundering herd
-- استفاده در تمام database connections
+- Random jitter to prevent thundering herd
+- Used in all database connections
 
 **Environment Variables:**
 - `DB_CONNECTION_RETRY_ATTEMPTS` (default: 5)
@@ -60,44 +60,44 @@
 ---
 
 ### ✅ REL-002: Kafka Dead Letter Queue
-- DLQ برای failed messages
-- Retry logic با exponential backoff
-- Manual commit برای error handling
+- DLQ for failed messages
+- Retry logic with exponential backoff
+- Manual commit for error handling
 - Error classification
 
 **DLQ Topics:** `{original-topic}-dlq`
 
 ---
 
-### ✅ REL-003: Persistent Storage برای RTO
-- جدول `rto_recommendations` در PostgreSQL ایجاد شد
-- تمام recommendations در database ذخیره می‌شوند
+### ✅ REL-003: Persistent Storage for RTO
+- The `rto_recommendations` table was created in PostgreSQL
+- All recommendations are stored in the database
 - Migration: `sql/init/03_rto_recommendations.sql`
 
-**Breaking Changes:** نیاز به اجرای migration قبل از start
+**Breaking Changes:** A migration must be run before start
 
 ---
 
-### ✅ REL-004: بهبود Health Checks
+### ✅ REL-004: Improved Health Checks
 - Liveness probe: `/health`
-- Readiness probe: `/health/ready` (با dependency checks)
+- Readiness probe: `/health/ready` (with dependency checks)
 - Dependency checks: PostgreSQL, MongoDB, Redis, Kafka
 
 ---
 
-## 🟡 بهبود عملکرد (Performance)
+## 🟡 Performance Improvements
 
 ### ✅ PERF-001: Async Kafka Consumer
-- کلاس `AsyncKafkaConsumer` با aiokafka
+- `AsyncKafkaConsumer` class with aiokafka
 - Fully async/await pattern
-- Ready برای جایگزینی threading-based consumer
+- Ready to replace the threading-based consumer
 
 **File:** `api-dashboard/utils/async_kafka.py`
 
 ---
 
 ### ✅ PERF-002: Connection Pooling
-- PostgreSQL connection pool در ML service
+- PostgreSQL connection pool in the ML service
 - Configurable pool size
 - Backward compatibility
 
@@ -109,8 +109,8 @@
 
 ### ✅ PERF-003: Rate Limiting
 - In-memory rate limiter
-- Per-minute و per-hour limits
-- Client identification از headers
+- Per-minute and per-hour limits
+- Client identification from headers
 
 **Environment Variables:**
 - `RATE_LIMIT_PER_MINUTE` (default: 60)
@@ -118,12 +118,12 @@
 
 ---
 
-## 🔵 بهبود نگهداری (Maintenance)
+## 🔵 Maintenance Improvements
 
 ### ✅ MAINT-001: Structured Logging
 - JSON format logging
-- Helper methods برای structured fields
-- Configuration از environment variables
+- Helper methods for structured fields
+- Configuration from environment variables
 
 **Environment Variables:**
 - `LOG_LEVEL` (default: INFO)
@@ -132,34 +132,34 @@
 ---
 
 ### ✅ MAINT-002: Configuration Management
-- تمام hardcoded values به environment variables
-- Default values در code
-- Validation و error handling
+- All hardcoded values moved to environment variables
+- Default values in code
+- Validation and error handling
 
 ---
 
-## 📁 فایل‌های جدید
+## 📁 New Files
 
-### امنیت
+### Security
 - `env.example`
 - `api-dashboard/auth.py`
 - `api-dashboard/auth_routes.py`
 
-### قابلیت اطمینان
+### Reliability
 - `api-dashboard/utils/retry.py`
 - `sql/init/03_rto_recommendations.sql`
 
-### عملکرد
+### Performance
 - `api-dashboard/utils/async_kafka.py`
 - `api-dashboard/utils/rate_limiter.py`
 - `ml-anomaly-detection/utils/db_pool.py`
 
-### نگهداری
+### Maintenance
 - `api-dashboard/utils/logging_config.py`
 
 ---
 
-## 📝 فایل‌های تغییر یافته
+## 📝 Modified Files
 
 ### Core
 - `docker-compose.yml`
@@ -176,15 +176,15 @@
 
 ## 🔄 Migration Guide
 
-### برای استفاده از تغییرات:
+### To use the changes:
 
-1. **ایجاد `.env` file:**
+1. **Create the `.env` file:**
    ```bash
    cp env.example .env
    # Edit .env with your actual values
    ```
 
-2. **اجرای Database Migration:**
+2. **Run the Database Migration:**
    ```bash
    psql -U fidps_user -d fidps_operational -f sql/init/03_rto_recommendations.sql
    ```
@@ -209,43 +209,43 @@
 ## ⚠️ Breaking Changes
 
 1. **Environment Variables Required:**
-   - قبل از start، فایل `.env` باید ایجاد شود
-   - تمام passwords باید تنظیم شوند
+   - The `.env` file must be created before start
+   - All passwords must be set
 
 2. **Database Migration:**
-   - Migration `03_rto_recommendations.sql` باید اجرا شود
+   - The `03_rto_recommendations.sql` migration must be run
 
 3. **Authentication:**
-   - برخی endpoints ممکن است نیاز به authentication داشته باشند
+   - Some endpoints may require authentication
    - Default users: admin/admin123, operator/operator123, viewer/viewer123
 
 4. **CORS:**
-   - CORS origins باید در `.env` تنظیم شود
+   - CORS origins must be set in `.env`
    - Default: localhost origins
 
 ---
 
-## 📊 آماری
+## 📊 Statistics
 
-- **تعداد فایل‌های ایجاد شده:** 18+
-- **تعداد فایل‌های تغییر یافته:** 15+
-- **تعداد مشکلات رفع شده:** 14
-- **خطوط کد اضافه شده:** ~2500+
-- **مدت زمان:** ~3 ساعت
+- **Files created:** 18+
+- **Files modified:** 15+
+- **Issues resolved:** 14
+- **Lines of code added:** ~2500+
+- **Duration:** ~3 hours
 
 ---
 
 ## ✅ Status
 
-**تمام بهبودها با موفقیت پیاده‌سازی شدند!**
+**All improvements were implemented successfully!**
 
-پروژه آماده برای:
+The project is ready for:
 - ✅ Development
 - ✅ Testing
-- ⚠️ Production (با تنظیمات)
+- ⚠️ Production (with configuration)
 
 ---
 
-**نسخه:** 2.0.0  
-**تاریخ:** 2025
+**Version:** 2.0.0
+**Date:** 2025
 

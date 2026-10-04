@@ -1,5 +1,5 @@
 # FIDPS Dashboard Startup Script
-# این اسکریپت dashboard را اجرا می‌کند
+# This script runs the dashboard
 
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host "  FIDPS Dashboard Startup Script" -ForegroundColor Cyan

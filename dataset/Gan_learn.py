@@ -7,11 +7,11 @@ import torch.nn as nn
 from Gan_def import generator, discriminator, device, latent_dim
 import torchvision
 
-# حذف این خط: latent_dim = 100
+# Remove this line: latent_dim = 100
 
 class BoreholeDataset(Dataset):
     def __init__(self, root_dir, transform=None):
-        # فقط فایل‌های با پسوند .png را جمع‌آوری می‌کنیم
+        # Only collect files with the .png extension
         self.img_paths = [os.path.join(root_dir, fname) for fname in os.listdir(root_dir) 
                          if fname.lower().endswith('.png')]
         self.transform = transform
@@ -25,11 +25,11 @@ class BoreholeDataset(Dataset):
             img = self.transform(img)
         return img
 
-# تبدیلات داده برای افزایش تنوع
+# Data transformations to increase diversity
 transform = transforms.Compose([
     transforms.Resize((256, 128)),
-    transforms.RandomHorizontalFlip(p=0.3),  # وارونه کردن افقی
-    transforms.ColorJitter(brightness=0.1, contrast=0.1),  # تغییر روشنایی و کنتراست
+    transforms.RandomHorizontalFlip(p=0.3),  # horizontal flip
+    transforms.ColorJitter(brightness=0.1, contrast=0.1),  # change brightness and contrast
     transforms.ToTensor(),
     transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
 ])

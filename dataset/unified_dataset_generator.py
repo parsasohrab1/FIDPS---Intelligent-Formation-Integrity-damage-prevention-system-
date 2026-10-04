@@ -14,7 +14,7 @@ from make_dataset import generate_synthetic_borehole_image, add_formation_damage
 from data_generator import LWD_MWD_DataGenerator, DamageType
 
 class UnifiedDatasetGenerator:
-    """کلاس یکپارچه برای تولید داده‌های تصویری و غیرتصویری"""
+    """Integrated class for generating image and non-image data"""
     
     def __init__(self):
         self.lwd_mwd_generator = LWD_MWD_DataGenerator()
@@ -31,12 +31,12 @@ class UnifiedDatasetGenerator:
         }
     
     def generate_correlated_image_data(self, sensor_data_row, image_id):
-        """تولید تصویر مرتبط با داده‌های سنسور"""
-        # استخراج اطلاعات آسیب از داده‌های سنسور
+        """Generate an image related to the sensor data"""
+        # Extract damage information from the sensor data
         damage_risk = sensor_data_row.get('damage_risk_score', 0)
         depth = sensor_data_row.get('depth', 1000)
         
-        # تعیین ابعاد تصویر بر اساس عمق
+        # Determine image dimensions based on depth
         if depth < 1000:
             height, width = 256, 128
         elif depth < 3000:
@@ -44,18 +44,18 @@ class UnifiedDatasetGenerator:
         else:
             height, width = 512, 256
         
-        # تعداد لایه‌ها بر اساس عمق
+        # Number of layers based on depth
         num_layers = max(5, min(20, int(depth / 200)))
         
-        # تولید تصویر پایه
+        # Generate the base image
         img = generate_synthetic_borehole_image(height=height, width=width, num_layers=num_layers)
         
-        # تعیین نوع و شدت آسیب
+        # Determine damage type and severity
         damage_type = FormationDamageType.NORMAL
         damage_severity = 0.0
         
-        if damage_risk > 0.1:  # اگر ریسک آسیب بالا باشد
-            # انتخاب نوع آسیب بر اساس پارامترهای سنسور
+        if damage_risk > 0.1:  # if the damage risk is high
+            # Select damage type based on sensor parameters
             if sensor_data_row.get('mud_viscosity', 0) > 60:
                 damage_type = FormationDamageType.CLAY_SWELLING
             elif sensor_data_row.get('vibration_z', 0) > 15:
@@ -82,21 +82,21 @@ class UnifiedDatasetGenerator:
         }
     
     def generate_unified_dataset(self, start_date, duration_days, num_images_per_day=10, output_path="unified_fidps_dataset"):
-        """تولید دیتاست یکپارچه شامل داده‌های سنسور و تصاویر مرتبط"""
+        """Generate an integrated dataset including sensor data and related images"""
         print(f"Generating unified FIDPS dataset for {duration_days} days...")
         
-        # ایجاد دایرکتوری‌های خروجی
+        # Create output directories
         os.makedirs(output_path, exist_ok=True)
         os.makedirs(f"{output_path}/sensor_data", exist_ok=True)
         os.makedirs(f"{output_path}/images", exist_ok=True)
         os.makedirs(f"{output_path}/metadata", exist_ok=True)
         os.makedirs(f"{output_path}/correlations", exist_ok=True)
         
-        # تولید داده‌های سنسور
+        # Generate sensor data
         print("Generating sensor data...")
         sensor_df = self.lwd_mwd_generator.generate_dataset(start_date, duration_days, f"{output_path}/sensor_data")
         
-        # انتخاب نمونه‌هایی از داده‌های سنسور برای تولید تصاویر مرتبط
+        # Select samples of sensor data to generate related images
         total_images = duration_days * num_images_per_day
         selected_indices = np.random.choice(len(sensor_df), size=min(total_images, len(sensor_df)), replace=False)
         selected_sensor_data = sensor_df.iloc[selected_indices]
@@ -107,19 +107,19 @@ class UnifiedDatasetGenerator:
         correlation_data = []
         
         for idx, (_, sensor_row) in enumerate(tqdm(selected_sensor_data.iterrows(), desc="Generating images")):
-            # تولید تصویر مرتبط
+            # Generate related image
             img, img_metadata = self.generate_correlated_image_data(sensor_row, idx)
             
-            # ذخیره تصویر
+            # Save the image
             image_filename = f"borehole_{idx:05d}.png"
             plt.imsave(f"{output_path}/images/{image_filename}", img)
             
-            # به‌روزرسانی متادیتا
+            # Update the metadata
             img_metadata['filename'] = image_filename
             img_metadata['generation_timestamp'] = datetime.now().isoformat()
             image_metadata.append(img_metadata)
             
-            # ایجاد داده‌های ارتباطی
+            # Create communication data
             correlation_entry = {
                 'image_id': idx,
                 'image_filename': image_filename,
@@ -138,7 +138,7 @@ class UnifiedDatasetGenerator:
             }
             correlation_data.append(correlation_entry)
         
-        # ذخیره متادیتای تصاویر
+        # Save image metadata
         with open(f"{output_path}/metadata/image_metadata.json", "w") as f:
             json.dump({
                 "dataset_info": {
@@ -154,12 +154,12 @@ class UnifiedDatasetGenerator:
                 "images": image_metadata
             }, f, indent=2)
         
-        # ذخیره داده‌های ارتباطی
+        # Save communication data
         correlation_df = pd.DataFrame(correlation_data)
         correlation_df.to_csv(f"{output_path}/correlations/image_sensor_correlations.csv", index=False)
         correlation_df.to_json(f"{output_path}/correlations/image_sensor_correlations.json", orient='records', indent=2)
         
-        # ایجاد خلاصه دیتاست
+        # Create the dataset summary
         dataset_summary = {
             "dataset_name": "FIDPS Unified Formation Integrity Dataset",
             "version": "1.0",
@@ -208,14 +208,14 @@ class UnifiedDatasetGenerator:
         return sensor_df, image_metadata, correlation_data
 
 if __name__ == "__main__":
-    # پیکربندی تولید دیتاست
+    # Dataset generation configuration
     generator = UnifiedDatasetGenerator()
     
     start_date = datetime(2024, 1, 1)
-    duration_days = 30  # یک ماه برای تست
-    images_per_day = 20  # 20 تصویر در روز
+    duration_days = 30  # one month for testing
+    images_per_day = 20  # 20 images per day
     
-    # تولید دیتاست یکپارچه
+    # Generate the integrated dataset
     sensor_data, image_metadata, correlations = generator.generate_unified_dataset(
         start_date=start_date,
         duration_days=duration_days,
@@ -229,7 +229,7 @@ if __name__ == "__main__":
     print(f"Generated images: {len(image_metadata)}")
     print(f"Average images per day: {len(image_metadata)/duration_days:.1f}")
     
-    # آمار آسیب‌ها در تصاویر
+    # Damage statistics in images
     damage_stats = {}
     for img in image_metadata:
         damage_type = img['damage_type']

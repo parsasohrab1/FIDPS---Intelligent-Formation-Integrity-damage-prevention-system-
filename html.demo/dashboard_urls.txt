@@ -1,32 +1,32 @@
 ═══════════════════════════════════════════════════════════
-    FIDPS Dashboard - لینک‌های دسترسی
+    FIDPS Dashboard - Access Links
 ═══════════════════════════════════════════════════════════
 
 🎨 Frontend Dashboard (React)
    URL: http://localhost:3000
-   توضیحات: داشبورد اصلی React با رابط کاربری مدرن
-   وضعیت: ✅ در حال اجرا
+   Description: Main React dashboard with a modern user interface
+   Status: ✅ Running
 
 ⚙️ API Dashboard (FastAPI Backend)
    URL: http://localhost:8000
-   توضیحات: بک‌اند FastAPI برای API endpoints
-   وضعیت: ⚠️ در حال راه‌اندازی
+   Description: FastAPI backend for API endpoints
+   Status: ⚠️ Starting up
 
 📚 API Documentation (Swagger UI)
    URL: http://localhost:8000/docs
-   توضیحات: مستندات کامل API با قابلیت تست
-   وضعیت: ⚠️ در حال راه‌اندازی
+   Description: Complete API documentation with testing capability
+   Status: ⚠️ Starting up
 
 ❤️ Health Check (Liveness)
    URL: http://localhost:8000/health
-   توضیحات: بررسی وضعیت سلامت سرویس
+   Description: Service health check
 
 ✅ Health Check (Readiness)
    URL: http://localhost:8000/health/ready
-   توضیحات: بررسی آمادگی سرویس و وابستگی‌ها
+   Description: Service readiness and dependency check
 
 ═══════════════════════════════════════════════════════════
-    سرویس‌های پشتیبان
+    Support services
 ═══════════════════════════════════════════════════════════
 
 PostgreSQL:    localhost:5432  ✅
@@ -36,19 +36,19 @@ Kafka:         localhost:9092  ✅
 Zookeeper:     localhost:2181  ✅
 
 ═══════════════════════════════════════════════════════════
-    دستورات مفید
+    Useful commands
 ═══════════════════════════════════════════════════════════
 
-بررسی وضعیت سرویس‌ها:
+Check the status of services:
   docker-compose ps
 
-مشاهده لاگ‌های API Dashboard:
+View API Dashboard logs:
   docker-compose logs -f api-dashboard
 
-مشاهده لاگ‌های Frontend:
+View Frontend logs:
   docker-compose logs -f frontend-react
 
-تست Health Check:
+Test Health Check:
   curl http://localhost:8000/health
 
 ═══════════════════════════════════════════════════════════

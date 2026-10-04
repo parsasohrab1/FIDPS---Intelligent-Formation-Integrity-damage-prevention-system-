@@ -23,26 +23,26 @@ class FormationDamageType(Enum):
 def add_well_log_features(img):
     height, width, _ = img.shape
     
-    # اضافه کردن خط عمودی نشانگر عمق در سمت چپ
+    # Add a vertical depth marker line on the left
     img[:, 0:3, :] = (0.1, 0.1, 0.1)
     
-    # اضافه کردن نشانگرهای عمق
+    # Add depth markers
     for i in range(0, height, height//10):
         img[i:i+2, 0:10, :] = (0.1, 0.1, 0.1)
         
-    # اضافه کردن خطوط افقی نازک برای نشان دادن مقیاس
+    # Add thin horizontal lines to show scale
     for i in range(0, height, height//20):
         img[i:i+1, :, :] *= 0.8
     
     return img
 
 def add_formation_damage(img, damage_type, severity=0.5):
-    """اضافه کردن انواع مختلف آسیب‌های سازندی به تصویر"""
+    """Add various types of formation damage to the image"""
     height, width, _ = img.shape
     damaged_img = img.copy()
     
     if damage_type == FormationDamageType.CLAY_SWELLING:
-        # تورم رس - ایجاد نواحی تیره و متورم
+        # Clay swelling - create dark, swollen areas
         for _ in range(int(severity * 10)):
             y = np.random.randint(0, height-20)
             x = np.random.randint(0, width-10)
@@ -51,7 +51,7 @@ def add_formation_damage(img, damage_type, severity=0.5):
             damaged_img[y:y+h, x:x+w, :] *= 0.3
             
     elif damage_type == FormationDamageType.DRILLING_INDUCED:
-        # آسیب مکانیکی - ایجاد شکستگی‌ها و ترک‌ها
+        # Mechanical damage - create fractures and cracks
         for _ in range(int(severity * 8)):
             y1 = np.random.randint(0, height)
             x1 = np.random.randint(0, width)
@@ -62,7 +62,7 @@ def add_formation_damage(img, damage_type, severity=0.5):
             cv2.line(damaged_img, (x1, y1), (x2, y2), (0, 0, 0), thickness=2)
             
     elif damage_type == FormationDamageType.FLUID_LOSS:
-        # از دست دادن سیال - ایجاد نواحی متخلخل
+        # Fluid loss - create porous areas
         for _ in range(int(severity * 15)):
             y = np.random.randint(0, height-5)
             x = np.random.randint(0, width-5)
@@ -70,7 +70,7 @@ def add_formation_damage(img, damage_type, severity=0.5):
             cv2.circle(damaged_img, (x, y), radius, (0.8, 0.8, 0.8), -1)
             
     elif damage_type == FormationDamageType.SCALE_FORMATION:
-        # تشکیل رسوب - ایجاد لایه‌های سفید
+        # Scale formation - create white layers
         for _ in range(int(severity * 12)):
             y = np.random.randint(0, height-3)
             x = np.random.randint(0, width)
@@ -78,7 +78,7 @@ def add_formation_damage(img, damage_type, severity=0.5):
             damaged_img[y:y+3, x:min(x+w, width), :] = (0.9, 0.9, 0.9)
             
     elif damage_type == FormationDamageType.EMULSION_BLOCKAGE:
-        # انسداد امولسیون - ایجاد نواحی کدر
+        # Emulsion blockage - create cloudy areas
         for _ in range(int(severity * 6)):
             y = np.random.randint(0, height-15)
             x = np.random.randint(0, width-15)
@@ -88,7 +88,7 @@ def add_formation_damage(img, damage_type, severity=0.5):
             damaged_img[y:y+h, x:x+w, :] = np.clip(noise, 0, 1)
             
     elif damage_type == FormationDamageType.STRESS_CORROSION:
-        # خوردگی تنشی - ایجاد نقاط خوردگی
+        # Stress corrosion - create corrosion spots
         for _ in range(int(severity * 20)):
             y = np.random.randint(0, height)
             x = np.random.randint(0, width)
@@ -108,13 +108,13 @@ def generate_synthetic_borehole_image(height=256, width=128, num_layers=10, add_
         (0.2, 0.2, 0.2),   # Basalt
     ]
     
-    # اضافه کردن ویژگی‌های بیشتر برای واقعی‌تر شدن تصاویر
+    # Add more features to make the images more realistic
     for i in range(num_layers):
         color = rock_colors[np.random.randint(0, len(rock_colors))]
         start = i * layer_height
         end = (i + 1) * layer_height
         
-        # تغییر ضخامت لایه‌ها به صورت تصادفی
+        # Randomly change layer thickness
         if i < num_layers - 1 and np.random.random() > 0.7:
             thickness_variation = np.random.randint(-layer_height//4, layer_height//4)
             end += thickness_variation
@@ -123,11 +123,11 @@ def generate_synthetic_borehole_image(height=256, width=128, num_layers=10, add_
         
         img[start:end, :, :] = color
         
-        # اضافه کردن بافت به لایه‌ها
+        # Add texture to the layers
         texture = np.random.normal(0, 0.05, (end-start, width, 3))
         img[start:end, :, :] += texture
         
-        # اضافه کردن ترک‌ها و شکستگی‌ها
+        # Add cracks and fractures
         if np.random.random() > 0.8:
             crack_pos = np.random.randint(0, width)
             crack_width = np.random.randint(1, 5)
@@ -135,7 +135,7 @@ def generate_synthetic_borehole_image(height=256, width=128, num_layers=10, add_
             crack_start = np.random.randint(start, end-crack_length)
             img[crack_start:crack_start+crack_length, crack_pos:crack_pos+crack_width, :] *= 0.7
     
-    # اضافه کردن نویز به کل تصویر
+    # Add noise to the whole image
     img += np.random.normal(0, 0.02, img.shape)
     img = np.clip(img, 0, 1)
     
@@ -145,7 +145,7 @@ def generate_synthetic_borehole_image(height=256, width=128, num_layers=10, add_
     return img
 
 def generate_enhanced_borehole_dataset(num_images=2000, output_dir="enhanced_borehole_dataset"):
-    """تولید دیتاست پیشرفته با انواع آسیب‌های سازندی"""
+    """Generate an advanced dataset with various types of formation damage"""
     os.makedirs(output_dir, exist_ok=True)
     os.makedirs(f"{output_dir}/images", exist_ok=True)
     os.makedirs(f"{output_dir}/metadata", exist_ok=True)
@@ -154,29 +154,29 @@ def generate_enhanced_borehole_dataset(num_images=2000, output_dir="enhanced_bor
     dataset_metadata = []
     
     for i in tqdm(range(num_images), desc="Generating enhanced borehole images"):
-        # تنوع در ابعاد تصویر
+        # Variety in image dimensions
         height = np.random.choice([256, 320, 384, 512])
         width = np.random.choice([128, 160, 192, 256])
         num_layers = np.random.randint(5, 20)
         
-        # تولید تصویر پایه
+        # Generate the base image
         img = generate_synthetic_borehole_image(height=height, width=width, num_layers=num_layers)
         
-        # انتخاب نوع آسیب (70% احتمال آسیب، 30% نرمال)
+        # Select damage type (70% chance of damage, 30% normal)
         has_damage = np.random.random() < 0.7
         damage_type = FormationDamageType.NORMAL
         damage_severity = 0.0
         
         if has_damage:
-            damage_type = np.random.choice(damage_types[:-1])  # حذف NORMAL از انتخاب
+            damage_type = np.random.choice(damage_types[:-1])  # exclude NORMAL from selection
             damage_severity = np.random.uniform(0.2, 0.9)
             img = add_formation_damage(img, damage_type, damage_severity)
         
-        # ذخیره تصویر
+        # Save the image
         image_filename = f"borehole_{i:05d}.png"
         plt.imsave(f"{output_dir}/images/{image_filename}", img)
         
-        # ایجاد متادیتا
+        # Create metadata
         metadata = {
             "image_id": i,
             "filename": image_filename,
@@ -187,7 +187,7 @@ def generate_enhanced_borehole_dataset(num_images=2000, output_dir="enhanced_bor
             },
             "formation_properties": {
                 "num_layers": num_layers,
-                "depth_range": [i * 10, (i + 1) * 10]  # فرضی
+                "depth_range": [i * 10, (i + 1) * 10]  # hypothetical
             },
             "damage_info": {
                 "has_damage": has_damage,
@@ -204,11 +204,11 @@ def generate_enhanced_borehole_dataset(num_images=2000, output_dir="enhanced_bor
         
         dataset_metadata.append(metadata)
         
-        # ذخیره متادیتای فردی
+        # Save individual metadata
         with open(f"{output_dir}/metadata/{image_filename.replace('.png', '_meta.json')}", "w") as f:
             json.dump(metadata, f, indent=2)
     
-    # ذخیره متادیتای کل دیتاست
+    # Save whole-dataset metadata
     with open(f"{output_dir}/dataset_metadata.json", "w") as f:
         json.dump({
             "dataset_info": {
@@ -223,13 +223,13 @@ def generate_enhanced_borehole_dataset(num_images=2000, output_dir="enhanced_bor
     
     return dataset_metadata
 
-# اجرای تولید دیتاست بهبود یافته
+# Run the improved dataset generation
 if __name__ == "__main__":
     dataset_metadata = generate_enhanced_borehole_dataset(num_images=2000)
     print(f"\nDataset generated successfully!")
     print(f"Total images: {len(dataset_metadata)}")
     
-    # آمار آسیب‌ها
+    # Damage statistics
     damage_stats = {}
     for metadata in dataset_metadata:
         damage_type = metadata['damage_info']['damage_type']
@@ -240,7 +240,7 @@ if __name__ == "__main__":
         print(f"  {damage_type}: {count} images ({count/len(dataset_metadata)*100:.1f}%)")
 
 
-# کپی تصاویر واقعی به دیتاست
+# Copy real images into the dataset
 real_images_dir = "path/to/real/well/logs"
 if os.path.exists(real_images_dir):
     for i, fname in enumerate(os.listdir(real_images_dir)):

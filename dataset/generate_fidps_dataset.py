@@ -4,8 +4,8 @@
 FIDPS Dataset Generator - Main Script
 =====================================
 
-اسکریپت اصلی برای تولید دیتاست یکپارچه سیستم پیشگیری از آسیب یکپارچگی سازند (FIDPS)
-شامل داده‌های سنسور LWD/MWD و تصاویر مرتبط گمانه با انواع آسیب‌های سازندی
+Main script for generating the integrated dataset of the Formation Integrity Damage Prevention System (FIDPS)
+Includes LWD/MWD sensor data and related borehole images with various types of formation damage
 
 Author: FIDPS Development Team
 Version: 1.0
@@ -19,13 +19,13 @@ from datetime import datetime, timedelta
 from pathlib import Path
 import sys
 
-# اضافه کردن مسیر پوشه dataset به sys.path
+# Add the dataset folder path to sys.path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from unified_dataset_generator import UnifiedDatasetGenerator
 
 def load_config(config_file):
-    """بارگذاری پیکربندی از فایل JSON"""
+    """Load the configuration from a JSON file"""
     try:
         with open(config_file, 'r', encoding='utf-8') as f:
             return json.load(f)
@@ -37,7 +37,7 @@ def load_config(config_file):
         return None
 
 def create_default_config(config_file):
-    """ایجاد فایل پیکربندی پیش‌فرض"""
+    """Create the default configuration file"""
     default_config = {
         "dataset_settings": {
             "name": "FIDPS Formation Integrity Dataset",
@@ -84,44 +84,44 @@ def create_default_config(config_file):
     return default_config
 
 def validate_config(config):
-    """اعتبارسنجی پیکربندی"""
+    """Validate the configuration"""
     errors = []
     
-    # بررسی تاریخ شروع
+    # Check the start date
     try:
         datetime.fromisoformat(config['time_settings']['start_date'])
     except (ValueError, KeyError):
         errors.append("Invalid start_date format. Use YYYY-MM-DD")
     
-    # بررسی مدت زمان
+    # Check the duration
     if config.get('time_settings', {}).get('duration_days', 0) <= 0:
         errors.append("duration_days must be positive")
     
-    # بررسی تعداد تصاویر
+    # Check the number of images
     if config.get('image_settings', {}).get('images_per_day', 0) <= 0:
         errors.append("images_per_day must be positive")
     
     return errors
 
 def print_dataset_info(config):
-    """نمایش اطلاعات دیتاست قبل از تولید"""
+    """Display dataset information before generation"""
     print("\n" + "="*60)
     print("FIDPS Dataset Generation Configuration")
     print("="*60)
     
-    # اطلاعات کلی
+    # General information
     dataset_info = config.get('dataset_settings', {})
     print(f"Dataset Name: {dataset_info.get('name', 'N/A')}")
     print(f"Version: {dataset_info.get('version', 'N/A')}")
     print(f"Description: {dataset_info.get('description', 'N/A')}")
     
-    # تنظیمات زمانی
+    # Time settings
     time_settings = config.get('time_settings', {})
     start_date = time_settings.get('start_date', 'N/A')
     duration = time_settings.get('duration_days', 0)
     print(f"\nTime Range: {start_date} to {start_date} + {duration} days")
     
-    # تنظیمات داده‌های سنسور
+    # Sensor data settings
     sensor_settings = config.get('sensor_data_settings', {})
     sampling_rate = sensor_settings.get('sampling_rate_minutes', 1)
     estimated_sensor_records = duration * 24 * 60 // sampling_rate
@@ -130,7 +130,7 @@ def print_dataset_info(config):
     print(f"  Estimated Records: {estimated_sensor_records:,}")
     print(f"  Include Anomalies: {sensor_settings.get('include_anomalies', True)}")
     
-    # تنظیمات تصاویر
+    # Image settings
     image_settings = config.get('image_settings', {})
     images_per_day = image_settings.get('images_per_day', 0)
     total_images = duration * images_per_day
@@ -139,7 +139,7 @@ def print_dataset_info(config):
     print(f"  Total Images: {total_images:,}")
     print(f"  Damage Probability: {image_settings.get('damage_probability', 0.7)*100:.1f}%")
     
-    # تنظیمات خروجی
+    # Output settings
     output_settings = config.get('output_settings', {})
     print(f"\nOutput Settings:")
     print(f"  Base Path: {output_settings.get('base_path', 'N/A')}")
@@ -148,7 +148,7 @@ def print_dataset_info(config):
     print("="*60)
 
 def main():
-    """تابع اصلی"""
+    """Main function"""
     parser = argparse.ArgumentParser(
         description='FIDPS Dataset Generator - Generate comprehensive formation integrity datasets',
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -193,18 +193,18 @@ Examples:
     
     args = parser.parse_args()
     
-    # ایجاد پیکربندی پیش‌فرض در صورت درخواست
+    # Create the default configuration if requested
     if args.create_config:
         create_default_config(args.config)
         return 0
     
-    # بارگذاری پیکربندی
+    # Load the configuration
     config = load_config(args.config)
     if config is None:
         print("Creating default configuration...")
         config = create_default_config(args.config)
     
-    # اعمال تنظیمات خط فرمان
+    # Apply command-line settings
     if args.output:
         config['output_settings']['base_path'] = args.output
     
@@ -217,7 +217,7 @@ Examples:
     if args.start_date:
         config['time_settings']['start_date'] = args.start_date
     
-    # اعتبارسنجی پیکربندی
+    # Validate the configuration
     validation_errors = validate_config(config)
     if validation_errors:
         print("Configuration errors:")
@@ -225,16 +225,16 @@ Examples:
             print(f"  - {error}")
         return 1
     
-    # نمایش اطلاعات دیتاست
+    # Display dataset information
     if not args.quiet:
         print_dataset_info(config)
     
-    # اجرای خشک (نمایش پیکربندی بدون تولید)
+    # Dry run (display the configuration without generating)
     if args.dry_run:
         print("\nDry run completed. No data generated.")
         return 0
     
-    # تأیید کاربر برای تولید
+    # User confirmation for generation
     if not args.quiet:
         response = input("\nProceed with dataset generation? (y/N): ")
         if response.lower() not in ['y', 'yes']:
@@ -242,16 +242,16 @@ Examples:
             return 0
     
     try:
-        # ایجاد generator
+        # Create the generator
         generator = UnifiedDatasetGenerator()
         
-        # استخراج پارامترها از پیکربندی
+        # Extract parameters from the configuration
         start_date = datetime.fromisoformat(config['time_settings']['start_date'])
         duration_days = config['time_settings']['duration_days']
         images_per_day = config['image_settings']['images_per_day']
         output_path = config['output_settings']['base_path']
         
-        # تولید دیتاست
+        # Generate the dataset
         print(f"\nStarting dataset generation...")
         sensor_data, image_metadata, correlations = generator.generate_unified_dataset(
             start_date=start_date,
@@ -260,7 +260,7 @@ Examples:
             output_path=output_path
         )
         
-        # ذخیره پیکربندی استفاده شده
+        # Save the configuration used
         config_output_path = os.path.join(output_path, 'generation_config.json')
         with open(config_output_path, 'w', encoding='utf-8') as f:
             json.dump(config, f, indent=2, ensure_ascii=False)
